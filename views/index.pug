@@ -1,0 +1,110 @@
+extends layout
+
+block content
+  header.masthead
+      .container.h-100
+        .row.h-100
+          .col-lg-7.my-auto
+            .header-content.mx-auto
+              h1.mb-5
+                | Kiwee is a web-based video chat app to help you connect with friends and family!
+              a.btn.btn-outline.btn-xl.js-scroll-trigger(href='#download') Start Now for Free!
+          .col-lg-5.my-auto
+            .device-container
+              .device-mockup.iphone6_plus.portrait.white
+                .device
+                  .screen
+                    // Demo image for screen mockup, you can put an image here, some HTML, an animation, video, or anything else!
+                    img.img-fluid(src='/images/demo-screen-1.jpg' alt='')
+                  .button
+                    // You can hook the "home button" to some JavaScript events or just remove it
+  section#download.download.bg-primary.text-center
+    .container
+      .row
+        .col-md-8.mx-auto
+          h2.section-heading Discover what all the buzz is about!
+          p Sign Up!
+          form(method='POST' action='/auth/signUp')
+            fieldset.form-group
+              label(for='username') Username:
+              input#username.form-control(type='text', placeholder='username' name='username' value=(undefined===username ? '' : user.username))
+              label(for='password') Password:
+              input#password.form-control(type='password', placeholder='password' name='password' value=(undefined===password ? '' : user.password))
+            button.btn.btn-primary(type='submit') Submit
+          br
+          p
+            | Already have an account? 
+            a(style='color:blue;', href='/auth/signIn') Sign In
+          br
+          if errors 
+            ul
+              for error in errors
+                li!= error.msg
+
+          if userexists
+            p=userexists
+  section#features.features
+    .container
+      .section-heading.text-center
+        h2 Unlimited Features, Unlimited Fun
+        p.text-muted Check out what you can do with Kiwee!
+        hr
+      .row
+        .col-lg-4.my-auto
+          .device-container
+            .device-mockup.iphone6_plus.portrait.white
+              .device
+                .screen
+                  // Demo image for screen mockup, you can put an image here, some HTML, an animation, video, or anything else!
+                  img.img-fluid(src='/images/demo-screen-1.jpg' alt='')
+                .button
+                  // You can hook the "home button" to some JavaScript events or just remove it
+        .col-lg-8.my-auto
+          .container-fluid
+            .row
+              .col-lg-6
+                .feature-item
+                  i.icon-screen-smartphone.text-primary
+                  h3 Mobile friendly
+                  p.text-muted Use the application across all your mobile devices!
+              .col-lg-6
+                .feature-item
+                  i.icon-camera.text-primary
+                  h3 Flexible Use
+                  p.text-muted Not feeling up for video? Use our text chat instead!
+            .row
+              .col-lg-6
+                .feature-item
+                  i.icon-present.text-primary
+                  h3 Free to Use
+                  p.text-muted Kiwee is a completely free app, all our features are free!
+              .col-lg-6
+                .feature-item
+                  i.icon-lock-open.text-primary
+                  h3 Password protected
+                  p.text-muted Your chat history is only accessible by you.
+  section.cta
+    .cta-content
+      .container
+        h2
+          | Stop waiting.
+          br
+          | Start Talking.
+        a.btn.btn-outline.btn-xl.js-scroll-trigger(href='#contact') Let&apos;s Get Started!
+    .overlay
+  section#contact.contact.bg-primary
+    .container
+      h2
+        | We
+        i.fas.fa-heart
+        |         new friends!
+      ul.list-inline.list-social
+        li.list-inline-item.social-twitter
+          a(href='#')
+            i.fab.fa-twitter
+        li.list-inline-item.social-facebook
+          a(href='#')
+            i.fab.fa-facebook-f
+        li.list-inline-item.social-google-plus
+          a(href='#')
+            i.fab.fa-google-plus-g

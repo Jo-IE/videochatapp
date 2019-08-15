@@ -1,0 +1,42 @@
+extends layout
+
+block content
+
+  
+  section.h-100
+    h1 Welcome #{user.username} !
+    a(href='/auth/signOut') Log Out
+    .container-fluid#videos
+      
+     .row
+        .col-md-6
+          video#localVideo(autoplay, muted)
+        .col-md-6.col-md-offset-2
+          video#remoteVideo(autoplay)
+    .container
+      .row
+        .col-md-8.offset-md-4
+          
+          button#callButton Call
+            i.fa.fa-phone-square
+          button#hangupButton End Call
+            i.fa.fa-phone-slash
+
+  
+  div(style="border-top: 1px solid black; height: 200px; overflow: auto;").container-fluid.h-10
+    .row
+      .col-sm-12
+        ul(style="list-style-type: none; margin:0; padding: 0;")#messages
+    
+  
+  form#message-form(action='')
+    .row
+      p#user-typing
+    .row
+      
+      input#m.col-sm-9(autocomplete='off')
+      
+      button#m-button.col-sm-3 Send
+  script(src="/socket.io/socket.io.js")  
+  script(src='https://webrtc.github.io/adapter/adapter-latest.js')       
+  script(src='/javascripts/webrtc.js')
