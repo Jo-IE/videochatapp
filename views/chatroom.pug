@@ -6,21 +6,22 @@ block content
   section.h-100
     h1 Welcome #{user.username} !
     a(href='/auth/signOut') Log Out
+    .container
+      .row
+        .col-md-8.offset-md-4.my-5.mx-auto
+          
+          button#callButton.btn-success Call
+            i.fa.fa-phone-square
+          button#hangupButton.btn-danger End Call
+            i.fa.fa-phone-slash
     .container-fluid#videos
       
      .row
-        .col-md-6
+        .col-md-6.mx-auto
           video#localVideo(autoplay, muted)
-        .col-md-6.col-md-offset-2
+        .col-md-6.col-md-offset-2.mx-auto
           video#remoteVideo(autoplay)
-    .container
-      .row
-        .col-md-8.offset-md-4
-          
-          button#callButton Call
-            i.fa.fa-phone-square
-          button#hangupButton End Call
-            i.fa.fa-phone-slash
+    
 
   
   div(style="border-top: 1px solid black; height: 200px; overflow: auto;").container-fluid.h-10
