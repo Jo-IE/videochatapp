@@ -1,4 +1,6 @@
-var debug = require("debug")("sw");
+var console = {};
+console.log = function() {};
+
 var filesToCache = [
   "/",
   "/javascripts/webrtc.js",
@@ -16,23 +18,23 @@ var filesToCache = [
 ];
 
 self.addEventListener("install", function(event) {
-  debug("SW Installed");
+  console.log("SW Installed");
   event.waitUntil(
     caches
       .open("static")
       .then(function(cache) {
-        debug("[ServiceWorker] Pre-caching files");
-        debug(cache);
+        console.log("[ServiceWorker] Pre-caching files");
+        console.log(cache);
         cache.addAll(filesToCache);
       })
       .catch(function(err) {
-        debug("Error:" + err);
+        console.log("Error:" + err);
       })
   );
 });
 
 self.addEventListener("activate", function() {
-  debug("SW Activated");
+  console.log("SW Activated");
 });
 
 self.addEventListener("fetch", function(event) {

@@ -1,5 +1,7 @@
 "use strict";
-var debug = require("debug")("webrtc");
+var console = {};
+console.log = function() {};
+
 var isChannelReady = false;
 var isInitiator = false;
 var isStarted = false;
@@ -39,31 +41,31 @@ var socket = io.connect();
 
 if (room !== "") {
   socket.emit("create or join", room);
-  debug("Attempted to create or  join room", room);
+  console.log("Attempted to create or  join room", room);
 }
 
 socket.on("created", function(room) {
-  debug("Created room " + room);
+  console.log("Created room " + room);
   isInitiator = true;
 });
 
 socket.on("full", function(room) {
-  debug("Room " + room + " is full");
+  console.log("Room " + room + " is full");
 });
 
 socket.on("join", function(room) {
-  debug("Another peer made a request to join room " + room);
-  debug("This peer is the initiator of room " + room + "!");
+  console.log("Another peer made a request to join room " + room);
+  console.log("This peer is the initiator of room " + room + "!");
   isChannelReady = true;
 });
 
 socket.on("joined", function(room) {
-  debug("joined: " + room);
+  console.log("joined: " + room);
   isChannelReady = true;
 });
 
 socket.on("log", function(array) {
-  debug.apply(console, array);
+  console.log.apply(console, array);
 });
 
 socket.on("chat message", function(msg) {
@@ -79,13 +81,13 @@ socket.on("typing", function(user) {
 ////////////////////////////////////////////////
 
 function sendMessage(message) {
-  debug("Client sending message: ", message);
+  console.log("Client sending message: ", message);
   socket.emit("message", message);
 }
 
 // This client receives a message
 socket.on("message", function(message) {
-  debug("Client received message:", message);
+  console.log("Client received message:", message);
   if (message === "got user media") {
     maybeStart();
   } else if (message.type === "offer") {
@@ -134,7 +136,7 @@ navigator.mediaDevices
   });
 
 function gotStream(stream) {
-  debug("Adding local stream.");
+  console.log("Adding local stream.");
   localStream = stream;
   localVideo.srcObject = stream;
   sendMessage("got user media");
@@ -147,7 +149,7 @@ var constraints = {
   video: true
 };
 
-debug("Getting user media with constraints", constraints);
+console.log("Getting user media with constraints", constraints);
 
 if (location.hostname !== "localhost") {
   requestTurn(
@@ -156,13 +158,13 @@ if (location.hostname !== "localhost") {
 }
 
 function maybeStart() {
-  debug(">>>>>>> maybeStart() ", isStarted, localStream, isChannelReady);
+  console.log(">>>>>>> maybeStart() ", isStarted, localStream, isChannelReady);
   if (!isStarted && typeof localStream !== "undefined" && isChannelReady) {
-    debug(">>>>>> creating peer connection");
+    console.log(">>>>>> creating peer connection");
     createPeerConnection();
     pc.addStream(localStream);
     isStarted = true;
-    debug("isInitiator", isInitiator);
+    console.log("isInitiator", isInitiator);
     if (isInitiator) {
       doCall();
     }
@@ -181,16 +183,16 @@ function createPeerConnection() {
     pc.onicecandidate = handleIceCandidate;
     pc.onaddstream = handleRemoteStreamAdded;
     pc.onremovestream = handleRemoteStreamRemoved;
-    debug("Created RTCPeerConnnection");
+    console.log("Created RTCPeerConnnection");
   } catch (e) {
-    debug("Failed to create PeerConnection, exception: " + e.message);
+    console.log("Failed to create PeerConnection, exception: " + e.message);
     alert("Cannot create RTCPeerConnection object.");
     return;
   }
 }
 
 function handleIceCandidate(event) {
-  debug("icecandidate event: ", event);
+  console.log("icecandidate event: ", event);
   if (event.candidate) {
     sendMessage({
       type: "candidate",
@@ -199,21 +201,21 @@ function handleIceCandidate(event) {
       candidate: event.candidate.candidate
     });
   } else {
-    debug("End of candidates.");
+    console.log("End of candidates.");
   }
 }
 
 function handleCreateOfferError(event) {
-  debug("createOffer() error: ", event);
+  console.log("createOffer() error: ", event);
 }
 
 function doCall() {
-  debug("Sending offer to peer");
+  console.log("Sending offer to peer");
   pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
 }
 
 function doAnswer() {
-  debug("Sending answer to peer.");
+  console.log("Sending answer to peer.");
   pc.createAnswer().then(
     setLocalAndSendMessage,
     onCreateSessionDescriptionError
@@ -222,7 +224,7 @@ function doAnswer() {
 
 function setLocalAndSendMessage(sessionDescription) {
   pc.setLocalDescription(sessionDescription);
-  debug("setLocalAndSendMessage sending message", sessionDescription);
+  console.log("setLocalAndSendMessage sending message", sessionDescription);
   sendMessage(sessionDescription);
 }
 
@@ -240,13 +242,13 @@ function requestTurn(turnURL) {
     }
   }
   if (!turnExists) {
-    debug("Getting TURN server from ", turnURL);
+    console.log("Getting TURN server from ", turnURL);
     // No TURN server. Get one from computeengineondemand.appspot.com:
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
       if (xhr.readyState === 4 && xhr.status === 200) {
         var turnServer = JSON.parse(xhr.responseText);
-        debug("Got TURN server: ", turnServer);
+        console.log("Got TURN server: ", turnServer);
         pcConfig.iceServers.push({
           urls: "turn:" + turnServer.username + "@" + turnServer.turn,
           credential: turnServer.password
@@ -260,24 +262,24 @@ function requestTurn(turnURL) {
 }
 
 function handleRemoteStreamAdded(event) {
-  debug("Remote stream added.");
+  console.log("Remote stream added.");
   remoteStream = event.stream;
   remoteVideo.srcObject = remoteStream;
 }
 
 function handleRemoteStreamRemoved(event) {
-  debug("Remote stream removed. Event: ", event);
+  console.log("Remote stream removed. Event: ", event);
 }
 
 function hangup() {
-  debug("Hanging up.");
+  console.log("Hanging up.");
   stop();
   sendMessage("bye");
   toggleVisibility(remoteVideo);
 }
 
 function handleRemoteHangup() {
-  debug("Session terminated.");
+  console.log("Session terminated.");
   stop();
   isInitiator = false;
 }
